@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.OK
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.UUID
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -23,11 +24,14 @@ class SpringbootKotlinSecurityBasicWithDbApplicationTests(
     @Autowired
     private lateinit var userAccountRepository: UserAccountRepository
 
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
+
     @BeforeEach
     fun setUp() {
         userAccountRepository.deleteAll()
-        userAccountRepository.save(UserAccount("user", false, "password", UUID.randomUUID()))
-        userAccountRepository.save(UserAccount("admin", true, "adminpassword", UUID.randomUUID()))
+        userAccountRepository.save(UserAccount("user", false, passwordEncoder.encode("password"), UUID.randomUUID()))
+        userAccountRepository.save(UserAccount("admin", true, passwordEncoder.encode("adminpassword"), UUID.randomUUID()))
     }
 
     @Test
