@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 
@@ -26,17 +28,6 @@ class SecurityConfiguration {
     }
 
     @Bean
-    fun userDetailsService(): UserDetailsService? {
-        val user: UserDetails = User.withDefaultPasswordEncoder()
-            .username("user")
-            .password("password")
-            .roles("USER")
-            .build()
-        val admin: UserDetails = User.withDefaultPasswordEncoder()
-            .username("admin")
-            .password("adminpassword")
-            .roles("ADMIN", "USER")
-            .build()
-        return InMemoryUserDetailsManager(user, admin)
-    }
+    fun passwordEncoder(): PasswordEncoder = NoOpPasswordEncoder.getInstance()
+
 }

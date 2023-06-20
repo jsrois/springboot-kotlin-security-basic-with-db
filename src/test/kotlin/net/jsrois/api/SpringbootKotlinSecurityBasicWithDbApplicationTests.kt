@@ -2,8 +2,11 @@ package net.jsrois.api
 
 import net.jsrois.api.controllers.ProductDTO
 import net.jsrois.api.controllers.UserDto
+import net.jsrois.api.repositories.UserAccount
+import net.jsrois.api.repositories.UserAccountRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -11,11 +14,21 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus.FORBIDDEN
 import org.springframework.http.HttpStatus.OK
+import java.util.UUID
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class SpringbootKotlinSecurityBasicWithDbApplicationTests(
     @Autowired private val api: TestRestTemplate
 ) {
+    @Autowired
+    private lateinit var userAccountRepository: UserAccountRepository
+
+    @BeforeEach
+    fun setUp() {
+        userAccountRepository.deleteAll()
+        userAccountRepository.save(UserAccount("user", false, "password", UUID.randomUUID()))
+        userAccountRepository.save(UserAccount("admin", true, "adminpassword", UUID.randomUUID()))
+    }
 
     @Test
     fun `returns data when providing credentials with basic auth`() {
